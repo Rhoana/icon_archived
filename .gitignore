@@ -1,0 +1,17 @@
+code/partition-comparison/build
+code/external/*.pyc
+code/model/cnn/*.pyc
+code/model/mlp/*.pyc
+code/model/*.pyc
+code/database/*.pyc
+code/common/*.pyc
+code/web/*.pyc
+code/offline/*.pyc
+code/external/*.pyc
+code/web/.project.py.swp
+code/external/*.pyc
+.DS_Store
+code/.DS_Store
+code/web/.DS_Store
+data/.DS_Store
+code/web/resources/.DS_Store
