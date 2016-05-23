@@ -1,0 +1,21 @@
+PATH=$PATH:/usr/local/cuda/bin THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 python check.py
+nvprof
+nvvp
+
+python 2.7.3
+virtualenv version that works with python 2.7.3
+
+
+
+RC
+/usr/local/cuda/bin/nvcc
+
+dependencies
+mahotas
+python 2.7.3
+pandas
+numpy
+theano
+
+
+https://www.sqlite.org/cli.html
