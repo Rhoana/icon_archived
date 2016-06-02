@@ -36,6 +36,9 @@ DATABASE_NAME = os.path.join(base_path, '../../data/database/icon.db')
 
 class DB:
 
+    # store only the first 100 training errors and validation
+    MAX_TRAINING_STATS = 100
+
     # Base SQL query for project
     QueryProject  = "SELECT Id, Type, Revision, BaseModel, "
     QueryProject += "TrainTime, SyncTime, Lock, "
@@ -61,12 +64,18 @@ class DB:
     #--------------------------------------------------------------------------------
     @staticmethod
     def storeTrainingStats(projectId, valLoss, avgCost, mode=0):
-
         #print 'id:', projectId, 'vl:', valLoss, 'ac:', avgCost, 'm:', mode
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         connection = lite.connect( DATABASE_NAME )
         with connection:
             cur = connection.cursor()
+
+            cmd = "SELECT COUNT(*) FROM TrainingStats WHERE ProjectId='%s'"%(projectId)
+            cur.execute( cmd )
+            results = cur.fetchall()
+            if len(results) >= DB.MAX_TRAINING_STATS:
+                return
+
             cmd  = "INSERT OR REPLACE INTO "
             cmd += "TrainingStats(ProjectId, ValidationError, "
             cmd += "TrainingCost, TrainingTime, ProjectMode ) "
@@ -97,8 +106,6 @@ class DB:
     @staticmethod
     def removeTrainingStats(projectId, projectMode=0):
         print 'DB/removeTrainingStat:', projectId
-        if True:
-            return
         connection = lite.connect( DATABASE_NAME )
         with connection:
             cur  = connection.cursor()
