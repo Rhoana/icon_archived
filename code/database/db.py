@@ -73,7 +73,7 @@ class DB:
             cmd = "SELECT COUNT(*) FROM TrainingStats WHERE ProjectId='%s'"%(projectId)
             cur.execute( cmd )
             results = cur.fetchall()
-            if len(results) >= DB.MAX_TRAINING_STATS:
+            if len(results) > 0 and results[0][0] >= DB.MAX_TRAINING_STATS:
                 return
 
             cmd  = "INSERT OR REPLACE INTO "
@@ -92,7 +92,8 @@ class DB:
             cur = connection.cursor()
             cmd  = "SELECT ValidationError, TrainingCost, TrainingTime "
             cmd += "FROM TrainingStats WHERE ProjectId=? AND ProjectMode=?"
-            cmd += "ORDER BY TrainingTime ASC LIMIT 100"
+            cmd += "ORDER BY TrainingTime ASC"
+            #cmd += "ORDER BY TrainingTime ASC LIMIT 100"
             vals = (projectId, projectMode)
             cur.execute( cmd, vals )
             results = cur.fetchall()

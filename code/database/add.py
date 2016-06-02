@@ -88,8 +88,9 @@ if __name__ == '__main__':
     if True:
         a = DB.getTrainingStats('testcnn')
         print 'res:', len(a)
-    
-        m = 3
+        exit(1)
+
+        m = 0
         DB.removeTrainingStats('testcnn', m)
         DB.removeTrainingStats('testmlp', m)
         exit(1)
