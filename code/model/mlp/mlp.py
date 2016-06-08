@@ -211,6 +211,7 @@ class MLP(object):
         row_range = 1
         #imSize = np.shape(image)
         #membraneProbabilities = np.zeros(np.shape(image))
+        classes = np.zeros(imSize)
         membraneProbabilities = np.zeros(imSize)
         patchSize = np.int(np.sqrt(self.hiddenLayers[0].W.eval().shape[0]))
 
@@ -255,22 +256,52 @@ class MLP(object):
             data_shared.set_value(np.float32(data))
             result = classify()
             #print 'results:', np.shape(result)
-            membraneProbabilities[row,:] = result[:,0]
+            #membraneProbabilities[row,:] = result[:,0]
+
+            classes[row,:] = np.argmax( result, axis=1 )
+            membraneProbabilities[row,:] = np.max( result, axis=1 )
+            #membraneProbabilities[row,:] = predicted_probs
+            '''
+            print '==='
+            print result
+            print '---'
+            print classes
+            print '---'
+            print membraneProbabilities
+            exit(1)
+            '''
+            '''
+            print '---results----'
+            print result
+            print '---'
+            print result[:,0]
+            print '---'
+            print result[:,1]
+            print '---'
+            print predicted_classes
+            print '---'
+            print predicted_probs
+            print '---'
+            exit(1)
+            '''
 
         end_time = time.clock()
         total_time = (end_time - start_time)
         print >> sys.stderr, ('Running time: ' +
                               '%.2fm' % (total_time / 60.))
 
-        return np.array(membraneProbabilities)
+        return np.array(membraneProbabilities), np.array(classes)
  
    
     def predict(self, image, mean=None, std=None, threshold=0.5):
-        prob = self.classify( image, mean=mean, std=std)
-        prob = self.threshold( prob, factor=threshold )
-        prob = prob.astype(dtype=int)
-        prob = prob.flatten()
-        return prob
+        #prob = self.classify( image, mean=mean, std=std)
+        #prob = self.threshold( prob, factor=threshold )
+        #prob = prob.astype(dtype=int)
+        #prob = prob.flatten()
+        #return prob
+        prob, classes = self.classify( image, mean=mean, std=std)
+        classes = classes.flatten()
+        return classes
  
     def threshold(self, prob, factor=0.5):
         prob[ prob > factor ] = 9
