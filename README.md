@@ -18,6 +18,13 @@ Running icon:
    cd rhoana/icon
    sh segment.sh
 
-6. from the web, you can chose a project and click start
-   to activate it or stop to deactivate.
+6. from a web browser, open the link
+   http://localhost:8889/browse
+   
+   Then select a project from the drop down list.
+   Press the start button to activate a project
+   or stop to deactivate.  Only one project can
+   be active at a time.  The active project is
+   is executed by the DNN training and segmentation
+   modules started above.
 
