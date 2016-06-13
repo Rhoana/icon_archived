@@ -216,13 +216,16 @@ def signal_handler(signal, frame):
         if manager is not None:
                 manager.shutdown()
 
-#---------------------------------------------------------------------------
-# Entry point to the main function of the program.
-#---------------------------------------------------------------------------
-if __name__ == '__main__':
+def main():
     print sys.argv
     Utility.report_status('running prediction module', '')
     signal.signal(signal.SIGINT, signal_handler)
 
     manager = Prediction()
     Manager.start( sys.argv, manager )
+    
+#---------------------------------------------------------------------------
+# Entry point to the main function of the program.
+#---------------------------------------------------------------------------
+if __name__ == '__main__':
+    main()

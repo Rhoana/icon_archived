@@ -9,6 +9,9 @@ import signal
 
 from datetime import datetime, date
 
+base_path = os.path.dirname(__file__)
+sys.path.insert(1,os.path.join(base_path, '../common'))
+sys.path.insert(2,os.path.join(base_path, '../database'))
 
 import tornado.httpserver
 from browserhandler import BrowseHandler
@@ -16,9 +19,6 @@ from annotationhandler import AnnotationHandler
 from projecthandler import ProjectHandler
 from helphandler import HelpHandler
 from defaulthandler import DefaultHandler
-
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../common'))
 
 from utility import Utility
 from database import Database

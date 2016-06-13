@@ -65,8 +65,8 @@ class ProjectHandler(tornado.web.RequestHandler):
         project = None if project is None else project.toJson()
         data = {}
         data['project'] = project
-        data['images'] = Utility.getImages( Paths.TrainGrayscale )
-        data['validation_images'] = Utility.getImages( Paths.ValidGrayscale )
+        data['images'] = DB.getImageNames(projectId, 0)
+        data['validation_images'] = DB.getImageNames(projectId, 1)
         data['projectnames'] = DB.getProjectNames()
         data = json.dumps( data )
         return Utility.compress( data )

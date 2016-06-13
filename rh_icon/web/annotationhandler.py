@@ -11,11 +11,6 @@ import numpy as np;
 import json
 from datetime import datetime, date
 
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../common'))
-sys.path.insert(2,os.path.join(base_path, '../database'))
-
-
 from db import DB
 from paths import Paths
 from utility import Utility;

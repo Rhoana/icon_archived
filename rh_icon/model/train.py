@@ -129,7 +129,7 @@ def signal_handler(signal, frame):
         if manager is not None:
                 manager.shutdown()
 
-if __name__ == '__main__':
+def main():
     Utility.report_status('running training manager', '')
     signal.signal(signal.SIGINT, signal_handler)
     manager = Training( )
@@ -137,3 +137,5 @@ if __name__ == '__main__':
     print 'manager:', manager
     Manager.start( sys.argv, manager )
 
+if __name__ == '__main__':
+    main()

@@ -19,12 +19,14 @@ import sys
 import json
 import glob
 import time
+import urllib
 import uuid
 from datetime import datetime, date
 from utility import *
 from paths import Paths
 import traceback
 
+from butterfly import ButterflyDataset, ButterflyPlane
 from project import Project
 from label import Label
 from image import Image
@@ -704,6 +706,68 @@ class DB:
             vals = (now, guid, projectId, imageId)
             cur.execute( cmd, vals )
         return guid
+
+    #--------------------------------------------------------------
+    # Butterfly
+    #--------------------------------------------------------------
+    @staticmethod
+    def getProjectButterflyDataset(projectId):
+        with lite.connect(DATABASE_NAME) as connection:
+            cur = connection.cursor()
+            cmd = "SELECT Experiment, Dataset, Channel"
+            cmd += "FROM Butterfly WHERE ProjectId=?"
+            cur.execute(cmd, (projectId, ))
+            results = cur.fetchall()
+            if len(results) == 0:
+                return None
+            experiment, dataset, channel = results[0]
+            dataset = ButterflyDataset(projectId, experiment, dataset, channel)
+            cmd = "SELECT Z, Width, Height, XOff, YOff"
+            cmd += "FROM ButterflyPlane WHERE ProjectId=? ORDER BY Z"
+            cur.execute(cmd, (projectId, ))
+            for z, width, height, xoff, yoff in cur:
+                dataset.add_plane(ButterflyPlane(z, width, height, xoff, yoff))
+            return dataset
+    
+    butterfly_scheme = "butterfly"
+    @staticmethod
+    def getImageNameFromButterflyPlane(dataset, plane):
+        '''Get a canonical image name from a butterfly dataset and plane'''
+        return "%s:%s+%06d" % (DB.butterfly_scheme,
+                               urllib.quote(dataset.project_id), plane.z)
+    
+    @staticmethod
+    def isButterflyImageName(image_name):
+        return image_name.startswith(DB.butterfly_scheme + ":")
+    
+    @staticmethod
+    def getButterflyPlaneFromImageName(image_name):
+        '''Get a Butterfly dataset and plane from an image name
+        
+        This is the inverse operation of getImageNameFromButterflyPlane
+        '''
+        if not DB.isButterflyImageName(image_name):
+            raise ValueError("Not a butterfly image name: " + image_name)
+        projectId, z = image_name[len(DB.butterfly_scheme)+1:].split("+")
+        projectId = urllib.unquote(projectId)
+        z = int(z)
+        with lite.connect(DATABASE_NAME) as connection:
+            cur = connection.cursor()
+            cmd = "SELECT Experiment, Dataset, Channel"
+            cmd += "FROM Butterfly WHERE ProjectId=?"
+            cur.execute(cmd, (projectId, ))
+            results = cur.fetchall()
+            if len(results) == 0:
+                return None
+            experiment, dataset, channel = results[0]
+            dataset = ButterflyDataset(projectId, experiment, dataset, channel)
+            cmd = "SELECT Width, Height, XOff, YOff"
+            cmd += "FROM ButterflyPlane WHERE ProjectId=? AND Z=?"
+            cur.execute(cmd, (projectId, z))
+            width, height, xoff, yoff = cur.fetchone()
+            plane = ButterflyPlane(z, width, height, xoff, yoff)
+            dataset.add_plane(plane)
+            return dataset, plane
 
     #--------------------------------------------------------------------------------
     # HIDDEN UNITS

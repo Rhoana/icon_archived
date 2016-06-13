@@ -57,6 +57,7 @@ def install(project):
 
     # setup the first 20 images as a training set
     i = 0
+    purpose = 0
     for path in paths:
         name = Utility.get_filename_noext( path )
         segFile = '%s/%s.%s.seg'%(Paths.Segmentation, name, project.id)
@@ -69,10 +70,12 @@ def install(project):
             annFile = None
 
         #print 'adding image: %s ann: %s'%(name, annFile)
-        project.addImage( imageId=name, annFile=annFile, segFile=segFile)
+        project.addImage( imageId=name, annFile=annFile, segFile=segFile,
+                          purpose=purpose)
         i += 1
         if i > 20:
-            break
+            # All subsequent images are validation
+            purpose = 1
 
     # store the project
     DB.storeProject( project )

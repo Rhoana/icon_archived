@@ -10,6 +10,12 @@ Running icon:
    cd rhoana/icon
    sh web.sh
 
+3.5 make sure nvcc is on your path
+    edit train.sh to define THEANO_FLAGS for your installation (e.g.
+    THEANO_FLAGS=nvcc.flags=-ccbin=gcc-4.9)
+    cd code/partition-comparison
+    python setup.py install
+
 4. run the trainining module
    cd rhoana/icon
    sh train.sh
