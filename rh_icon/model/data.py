@@ -33,13 +33,10 @@ import shutil
 import json
 import PIL.Image
 
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../common'))
-
-from utility import Utility
-from settings import Paths
-from project import Project
-from db import DB
+from rh_icon.common.utility import Utility
+from rh_icon.common.settings import Paths
+from rh_icon.database.project import Project
+from rh_icon.database.db import DB
 
 class Entry:
     def __init__(self, name, offset, length):

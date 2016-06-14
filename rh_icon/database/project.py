@@ -22,13 +22,10 @@ import time
 import uuid
 from datetime import datetime, date
 
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../common'))
-
-from utility import Utility
-from paths import Paths
-from label import Label
-from image import Image
+from rh_icon.common.utility import Utility
+from rh_icon.common.paths import Paths
+from rh_icon.database.label import Label
+from rh_icon.database.image import Image
 
 class Project (object):
 

@@ -9,20 +9,13 @@ import partition_comparison
 import StringIO
 import glob
 
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../../common'))
-sys.path.insert(2,os.path.join(base_path, '../../database'))
-sys.path.insert(3,os.path.join(base_path, '../'))
+from rh_icon.database.db import DB
+from rh_icon.database.project import Project
+from rh_icon.common.performance import Performance
+from rh_icon.common.paths import Paths
 
-from db import DB
-from project import Project
-from performance import Performance
-from paths import Paths
-
-from mlp import MLP
-from data import Data
-
-print 'base_path:', base_path
+from rh_icon.model.mlp.mlp import MLP
+from rh_icon.model.data import Data
 
 if __name__ == '__main__':
 

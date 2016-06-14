@@ -19,15 +19,10 @@ from theano.tensor.signal import downsample
 from theano.tensor.nnet import conv
 from scipy.ndimage.interpolation import shift
 
-#base_path = os.path.dirname(__file__)
-#sys.path.insert(1,os.path.join(base_path, '../model'))
-#sys.path.insert(2,os.path.join(base_path, '../external'))
-#sys.path.insert(3,os.path.join(base_path, '../common'))
-
-from utility import Utility
-from activation_functions import rectified_linear
-from logistic_sgd import LogisticRegression
-from convlayer import LeNetConvPoolLayer
+from rh_icon.common.utility import Utility
+from rh_icon.model.activation_functions import rectified_linear
+from rh_icon.model.mlp.logistic_sgd import LogisticRegression
+from rh_icon.model.cnn.convlayer import LeNetConvPoolLayer
 
 def get_max_pool_frag(convolved_image, offset1, offset2):
     image_width = convolved_image.shape[2]

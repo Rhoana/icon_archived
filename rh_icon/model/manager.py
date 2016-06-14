@@ -24,21 +24,13 @@ import numpy as np
 import theano
 import theano.tensor as T
 
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../common'))
-sys.path.insert(2,os.path.join(base_path, './cnn'))
-sys.path.insert(3,os.path.join(base_path, './mlp'))
-sys.path.insert(4,os.path.join(base_path, '../database'))
-
-from project import Project
-from mlp import MLP 
-#from mlp_offline import MLP_Offline
-from cnn import CNN
-#from cnn_offline import CNN_Offline
-from utility import Utility
-from paths import Paths
-from data import Data
-from db import DB
+from rh_icon.database.project import Project
+from rh_icon.model.mlp.mlp import MLP 
+from rh_icon.model.cnn.cnn import CNN
+from rh_icon.common.utility import Utility
+from rh_icon.common.paths import Paths
+from rh_icon.model.data import Data
+from rh_icon.database.db import DB
 
 #---------------------------------------------------------------------------
 class Manager(threading.Thread):

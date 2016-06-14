@@ -61,7 +61,7 @@ body {
 
 .sidebar {
   float: left;
-  background-image: url(../images/module_light.png);
+  background-image: url(/images/module_light.png);
   background-color: rgba(255, 255, 255, 0.054);
   height: 1034px;
   width: 35px;
@@ -78,7 +78,7 @@ body {
   float: left;
   min-height: 1034px;
   background-color: rgba(255, 255, 255, 0.054);
-  background-image: url(../images/module_light.png);
+  background-image: url(/images/module_light.png);
   margin-left: 3px;
   margin-right: 3px;
   margin-top: 0px;
@@ -89,7 +89,7 @@ body {
   width: 180px;
   min-height: 1034px;
   background-color: rgba(255, 255, 255, 0.054);
-  background-image: url(../images/module_light.png);
+  background-image: url(/images/module_light.png);
   margin-left: 3px;
   margin-right: 3px;
   margin-top: 0px;
@@ -136,13 +136,13 @@ body {
 .progress_run {
   width: 90px;
   height: 15px;
-  background: url("../images/bg_progress.gif") repeat scroll 0px 0px padding-box transparent;
+  background: url("/images/bg_progress.gif") repeat scroll 0px 0px padding-box transparent;
 
 }
 .progress_stop {
   width: 90px;
   height: 15px;
-  background: url("../images/bg_progress_stopped.png") repeat scroll 0px 0px padding-box transparent;
+  background: url("/images/bg_progress_stopped.png") repeat scroll 0px 0px padding-box transparent;
 
 }
 
@@ -228,7 +228,7 @@ body {
 }
 
 .nav_vertical_button_down {
-  background: url("../images/uparrows_off.svg") no-repeat scroll 0% 0% transparent;
+  background: url("/images/uparrows_off.svg") no-repeat scroll 0% 0% transparent;
   -webkit-transform: rotate(180deg);
   -moz-transform: rotate(180deg);
   -ms-transform: rotate(180deg);
@@ -245,11 +245,11 @@ body {
 .nav_vertical_button_down {
   margin-top: 0px;
   margin-bottom: 5px;
-  background: url("../images/uparrows_off.svg") no-repeat scroll 0% 0% transparent;
+  background: url("/images/uparrows_off.svg") no-repeat scroll 0% 0% transparent;
 }
 
 .logo_style_vertical {
-  abackground: url("../images/logo_title_small.svg") no-repeat scroll 0% 0% transparent;
+  abackground: url("/images/logo_title_small.svg") no-repeat scroll 0% 0% transparent;
   -webkit-transform: rotate(270deg);
   -moz-transform: rotate(270deg);
   -ms-transform: rotate(270deg);
@@ -369,7 +369,7 @@ body {
   margin: 0px;
   padding-top: 5px;
   padding-bottom: 5px;
-  background: url("../images/module_dark.png") repeat scroll 0px 0px padding-box transparent;
+  background: url("/images/module_dark.png") repeat scroll 0px 0px padding-box transparent;
 }
 
 
@@ -379,7 +379,7 @@ body {
 	  min-width: 1034px;
     aborder: 1px solid rgba(255,255,255,0.1);;
     background-color: rgba(255, 255, 255, 0.054);
-    background-image: url(../images/module_light.png);
+    background-image: url(/images/module_light.png);
     abox-shadow: 0 8px 4px -4px rgba(44,12,12,0.5);
 }
 

@@ -60,3 +60,6 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+# C++ source files compiled from Cython
+rh_icon/partition_comparison/src/partition_comparison.cpp

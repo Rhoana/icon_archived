@@ -22,18 +22,17 @@ import time
 import urllib
 import uuid
 from datetime import datetime, date
-from utility import *
-from paths import Paths
 import traceback
 
 from butterfly import ButterflyDataset, ButterflyPlane
-from project import Project
-from label import Label
-from image import Image
-from stats import TrainingStats
+from rh_icon.common.utility import *
+from rh_icon.common.paths import Paths
+from rh_icon.database.project import Project
+from rh_icon.database.label import Label
+from rh_icon.database.image import Image
+from rh_icon.database.stats import TrainingStats
 
 base_path = os.path.dirname(__file__)
-sys.path.insert(2,os.path.join(base_path, '../common'))
 DATABASE_NAME = os.path.join(base_path, '../../data/database/icon.db')
 
 class DB:

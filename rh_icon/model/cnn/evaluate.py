@@ -9,14 +9,11 @@ import partition_comparison
 import StringIO
 import glob
 
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../../common'))
-sys.path.insert(2,os.path.join(base_path, '../../database'))
-from db import DB
-from project import Project
-from performance import Performance
+from rh_icon.database.db import DB
+from rh_icon.database.project import Project
+from rh_icon.common.performance import Performance
 
-from cnn import CNN
+from rh_icon.model.cnn.cnn import CNN
 
 if __name__ == '__main__':
 

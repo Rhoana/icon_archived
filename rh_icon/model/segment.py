@@ -29,19 +29,13 @@ import zlib
 import mahotas
 import glob
 
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../common'))
-sys.path.insert(2,os.path.join(base_path, './cnn'))
-sys.path.insert(3,os.path.join(base_path, './mlp'))
-sys.path.insert(4,os.path.join(base_path, '../database'))
-
-from manager import Manager
-from utility import Utility
-from utility import enum
-from settings import Settings
-from paths import Paths
-from db import DB
-from performance import Performance
+from rh_icon.model.manager import Manager
+from rh_icon.common.utility import Utility
+from rh_icon.common.utility import enum
+from rh_icon.common.settings import Settings
+from rh_icon.common.paths import Paths
+from rh_icon.database.db import DB
+from rh_icon.common.performance import Performance
 
 #---------------------------------------------------------------------------
 class Prediction(Manager):

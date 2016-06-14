@@ -21,14 +21,12 @@ import glob
 import time
 import uuid
 from datetime import datetime, date
-from utility import *
-from paths import Paths
 import traceback
 
+from rh_icon.common.utility import *
+from rh_icon.common.paths import Paths
+from rh_icon.database.db import DATABASE_NAME
 
-base_path = os.path.dirname(__file__)
-sys.path.insert(2,os.path.join(base_path, '../common'))
-DATABASE_NAME = os.path.join(base_path, '../../data/database/icon.db')
 
 class Tables:
 

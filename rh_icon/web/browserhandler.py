@@ -17,18 +17,16 @@ import tornado.ioloop
 import tornado.web
 import socket
 import os
+import pkg_resources
 import sys
+import tempfile
 import re
 import glob
 import json
 
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../common'))
-sys.path.insert(2,os.path.join(base_path, '../database'))
-
-from utility import Utility
-from paths import Paths
-from db import DB
+from rh_icon.common.utility import Utility
+from rh_icon.common.paths import Paths
+from rh_icon.database.db import DB
 
 class BrowseHandler(tornado.web.RequestHandler):
 
@@ -53,7 +51,11 @@ class BrowseHandler(tornado.web.RequestHandler):
             self.write(self.getallimages())
         else:
             print 'returning default...'
-            self.render("browser.html")
+	    data = pkg_resources.resource_string(__name__, "resources/browser.html")
+	    with tempfile.NamedTemporaryFile() as fd:
+		fd.write(data)
+		fd.flush()
+		self.render(fd.name)
 
     def post(self):
         print ('-->BrowseHandler.post...', self.request.uri)

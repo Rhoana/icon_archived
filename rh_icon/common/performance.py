@@ -25,13 +25,9 @@ import csv
 from math import log
 
 
-base_path = os.path.dirname(__file__)
-#sys.path.insert(1,os.path.join(base_path, '../common'))
-#sys.path.insert(1,os.path.join(base_path, '../offline'))
-
-from paths import Paths
-from utility import *
-from database import Database
+from rh_icon.common.paths import Paths
+from rh_icon.common.utility import *
+from rh_icon.common.database import Database
 
 def variation_of_information(X, Y):
   n = float(sum([len(x) for x in X]))

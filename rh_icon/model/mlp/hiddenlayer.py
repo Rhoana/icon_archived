@@ -6,11 +6,7 @@ import numpy as np
 import theano
 import theano.tensor as T
 
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../'))
-sys.path.insert(2,os.path.join(base_path, '../../common'))
-
-from activation_functions import rectified_linear
+from rh_icon.model.activation_functions import rectified_linear
 
 class HiddenLayer(object):
     def __init__(self, rng, input, n_in, n_out, W=None, b=None,

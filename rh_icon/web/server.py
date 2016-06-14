@@ -1,7 +1,10 @@
 import tornado.ioloop
 import tornado.web
 import socket
+import mimetypes
 import os
+import pkg_resources
+import posixpath
 import sys
 import time
 import signal
@@ -9,48 +12,85 @@ import signal
 
 from datetime import datetime, date
 
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../common'))
-sys.path.insert(2,os.path.join(base_path, '../database'))
-
 import tornado.httpserver
-from browserhandler import BrowseHandler
-from annotationhandler import AnnotationHandler
-from projecthandler import ProjectHandler
-from helphandler import HelpHandler
-from defaulthandler import DefaultHandler
+import rh_logger
+from rh_icon.web.browserhandler import BrowseHandler
+from rh_icon.web.annotationhandler import AnnotationHandler
+from rh_icon.web.projecthandler import ProjectHandler
+from rh_icon.web.helphandler import HelpHandler
+from rh_icon.web.defaulthandler import DefaultHandler
 
-from utility import Utility
-from database import Database
+from rh_icon.common.utility import Utility
+from rh_icon.common.database import Database
 
 MAX_WAIT_SECONDS_BEFORE_SHUTDOWN = 0.5
 
+#
+# Thank you Luigi:
+# https://github.com/spotify/luigi/blob/
+#    f7219c38121098d464011a094156d99b5b320362/luigi/server.py#L212
+#
+# Had vague idea that resources should be served via pkg_handler and
+# Luigi did it, so I am cribbing from their implementation.
+#
+# TODO - share with Butterfly
+#
+class PkgResourcesHandler(tornado.web.RequestHandler):
+
+    def initialize(self, path, default_filename=None):
+	self.root = path
+
+    def get(self, path):
+	rh_logger.logger.report_event("GET " + self.request.uri)
+	if path == "/":
+	    self.redirect("index.html?"+self.request.query)
+	path = posixpath.normpath(path)
+	if os.path.isabs(path) or path.startswith(".."):
+	    return self.send_error(404)
+
+	extension = os.path.splitext(path)[1]
+	if extension in mimetypes.types_map:
+	    self.set_header("Content-Type", mimetypes.types_map[extension])
+	elif extension == ".svg":
+	    self.set_header("Content-Type", "image/svg+xml")
+	data = pkg_resources.resource_string(
+	    __name__, os.path.join(self.root, path))
+	self.write(data)
+
 class Application(tornado.web.Application):
     def __init__(self):
-		handlers = [
-			(r"/", DefaultHandler),
-			(r"/browse.*", BrowseHandler),
-			(r"/project.*", ProjectHandler),
-            (r"/annotate.*", AnnotationHandler),
-			(r'/help*', HelpHandler),
-			(r'/settings/(.*)', tornado.web.StaticFileHandler, {'path': 'resources/settings/'}),
-			(r'/js/(.*)', tornado.web.StaticFileHandler, {'path': 'resources/js/'}),
-			(r'/js/vendors/(.*)', tornado.web.StaticFileHandler, {'path': 'resources/js/vendors/'}),
-			(r'/css/(.*)', tornado.web.StaticFileHandler, {'path': 'resources/css/'}),
-			(r'/uikit/(.*)', tornado.web.StaticFileHandler, {'path': 'resources/uikit/'}),
-			(r'/images/(.*)', tornado.web.StaticFileHandler, {'path': 'resources/images/'}),
-			(r'/open-iconic/(.*)', tornado.web.StaticFileHandler, {'path': 'resources/open-iconic/'}),
-            (r'/train/(.*)', tornado.web.StaticFileHandler, {'path': 'resources/train/'}),
-            (r'/validate/(.*)', tornado.web.StaticFileHandler, {'path': 'resources/validate/'}),
-			#(r"/annotate/(.*)", AnnotationHandler, dict(logic=self)),
-		]
+	handlers = [
+	    (r"/", DefaultHandler),
+	    (r"/browse.*", BrowseHandler),
+	    (r"/project.*", ProjectHandler),
+	    (r"/annotate.*", AnnotationHandler),
+	    (r'/help*', HelpHandler),
+	    (r'/settings/(.*)', PkgResourcesHandler,
+	     {'path': 'resources/settings/'}),
+	    (r'/js/(.*)', PkgResourcesHandler,
+	     {'path': 'resources/js/'}),
+	    (r'/js/vendors/(.*)', PkgResourcesHandler,
+	     {'path': 'resources/js/vendors/'}),
+	    (r'/css/(.*)', PkgResourcesHandler,
+	     {'path': 'resources/css/'}),
+	    (r'/uikit/(.*)', PkgResourcesHandler,
+	     {'path': 'resources/uikit/'}),
+	    (r'/images/(.*)', PkgResourcesHandler,
+	     {'path': 'resources/images/'}),
+	    (r'/open-iconic/(.*)', PkgResourcesHandler,
+	     {'path': 'resources/open-iconic/'}),
+	    (r'/train/(.*)', PkgResourcesHandler,
+	     {'path': 'resources/train/'}),
+            (r'/validate/(.*)', PkgResourcesHandler,
+	     {'path': 'resources/validate/'})
+	]
 
-		settings = {
-			"template_path": 'resources',
-			"static_path": 'resources',
-		}
+	settings = {
+	    "template_path": 'resources',
+	    "static_path": 'resources',
+	}
 
-		tornado.web.Application.__init__(self, handlers, **settings)
+	tornado.web.Application.__init__(self, handlers, **settings)
 
 
 class Server():
@@ -98,6 +138,7 @@ def shutdown():
 
 def main():
     global server
+    rh_logger.logger.start_process("icon-webserver", "starting")
     signal.signal(signal.SIGTERM, sig_handler)
     signal.signal(signal.SIGINT, sig_handler)
 

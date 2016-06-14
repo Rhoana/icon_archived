@@ -15,24 +15,20 @@ import theano.tensor as T
 from theano.tensor.signal import downsample
 from theano.tensor.nnet import conv
 
-base_path = os.path.dirname(__file__)
-#sys.path.insert(1,os.path.join(base_path, '..'))
-sys.path.insert(1,os.path.join(base_path, '../mlp'))
-sys.path.insert(2,os.path.join(base_path, '../../common'))
-sys.path.insert(3,os.path.join(base_path, '../../database'))
+from rh_icon.database.db import DB
+from rh_icon.model.mlp.logistic_sgd import LogisticRegression
+from rh_icon.model.mlp.mlp import MLP
+from rh_icon.model.activation_functions import rectified_linear
+from rh_icon.common.paths import Paths
 
-from db import DB
-from logistic_sgd import LogisticRegression
-from mlp import MLP
-from activation_functions import rectified_linear
-from paths import Paths
+from rh_icon.common.generateTrainValTestData \
+     import gen_data_supervised, shared_dataset, normalizeImage,\
+     stupid_map_wrapper
+from rh_icon.common.classifyImage import generate_patch_data_rows
+from rh_icon.common.vsk_utils import shared_single_dataset
+from rh_icon.model.cnn.fast_segment import *
 
-from generateTrainValTestData import gen_data_supervised, shared_dataset, normalizeImage, stupid_map_wrapper
-from classifyImage import generate_patch_data_rows
-from vsk_utils import shared_single_dataset
-from fast_segment import *
-
-#import matplotlib
+#import matplotlib    gd
 #import matplotlib.pyplot as plt
 import getpass
 from convlayer import LeNetConvPoolLayer

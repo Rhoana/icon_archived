@@ -1,7 +1,7 @@
 import tornado.web
 import urllib
 
-from db import DB
+from rh_icon.database.db import DB
 
 
 class ImageHandler(tornado.web.RequestHandler):

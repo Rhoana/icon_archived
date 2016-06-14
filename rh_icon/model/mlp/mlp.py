@@ -12,22 +12,16 @@ import theano.tensor as T
 
 from scipy.ndimage.interpolation import shift
 
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../'))
-sys.path.insert(2,os.path.join(base_path, '../../common'))
-sys.path.insert(3,os.path.join(base_path, '../../database'))
-
-print 'mlp path:', base_path
-
-from db import DB
-from paths import Paths
-from utility import Utility
-from hiddenlayer import HiddenLayer
-from logistic_sgd import LogisticRegression
-from generateTrainValTestData import gen_data_supervised, shared_dataset, normalizeImage, stupid_map_wrapper
+from rh_icon.database.db import DB
+from rh_icon.common.paths import Paths
+from rh_icon.common.utility import Utility
+from rh_icon.model.mlp.hiddenlayer import HiddenLayer
+from rh_icon.model.mlp.logistic_sgd import LogisticRegression
+from rh_icon.common.generateTrainValTestData import\
+     gen_data_supervised, shared_dataset, normalizeImage, stupid_map_wrapper
 import multiprocessing
-from vsk_utils import shared_single_dataset
-from activation_functions import rectified_linear
+from rh_icon.common.vsk_utils import shared_single_dataset
+from rh_icon.model.activation_functions import rectified_linear
 import smtplib
 import getpass
 

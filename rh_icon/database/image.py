@@ -6,14 +6,8 @@ from datetime import datetime, date
 
 
 
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../common'))
-
-from utility import Utility
-from paths import Paths
-
-DATABASE_NAME = os.path.join(base_path, '../../data/database/icon.db')
-
+from rh_icon.common.utility import Utility
+from rh_icon.common.paths import Paths
 
 #---------------------------------------------------------------------------
 # Image datum

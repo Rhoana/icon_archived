@@ -28,7 +28,7 @@ import resource
 import mahotas
 
 from datetime import datetime
-from paths import Paths
+from rh_icon.common.paths import Paths
 
 def enum(**enums):
     return type('Enum', (), enums)

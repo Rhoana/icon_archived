@@ -7,17 +7,14 @@ import sys
 import re
 import glob
 import json
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../common'))
-sys.path.insert(2,os.path.join(base_path, '../database'))
 
-from db import DB
-from project import Project
-from utility import Utility
-from settings import Paths
+from rh_icon.database.db import DB
+from rh_icon.database.project import Project
+from rh_icon.common.utility import Utility
+from rh_icon.common.settings import Paths
 #from performance import Performance
-from db import Label
-from db import Image
+from rh_icon.database.db import Label
+from rh_icon.database.db import Image
 
 class ProjectHandler(tornado.web.RequestHandler):
 

@@ -23,14 +23,11 @@ import uuid
 
 from datetime import datetime, date
 
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../common'))
-
-from utility import *
-from paths import Paths
-from tables import Tables
-from project import Project
-from db import DB
+from rh_icon.common.utility import *
+from rh_icon.common.paths import Paths
+from rh_icon.database.tables import Tables
+from rh_icon.database.project import Project
+from rh_icon.database.db import DB
 
 DATABASE_NAME = os.path.join(base_path, '../../data/database/icon.db')
 

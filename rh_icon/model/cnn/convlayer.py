@@ -13,12 +13,7 @@ import theano.tensor as T
 from theano.tensor.signal import downsample
 from theano.tensor.nnet import conv
 
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../../external'))
-sys.path.insert(2,os.path.join(base_path, '../../common'))
-sys.path.insert(3,os.path.join(base_path, '../'))
-
-from activation_functions import rectified_linear
+from rh_icon.model.activation_functions import rectified_linear
 
 class LeNetConvPoolLayer(object):
     def __init__(self, rng, input, filter_shape, image_shape, poolsize=(2, 2), activation=rectified_linear):

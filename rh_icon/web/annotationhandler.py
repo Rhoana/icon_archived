@@ -3,7 +3,9 @@ import tornado.web
 import socket
 import time
 import os
+import pkg_resources
 import sys
+import tempfile
 import zlib
 import StringIO
 import base64
@@ -11,9 +13,9 @@ import numpy as np;
 import json
 from datetime import datetime, date
 
-from db import DB
-from paths import Paths
-from utility import Utility;
+from rh_icon.database.db import DB
+from rh_icon.common.paths import Paths
+from rh_icon.common.utility import Utility;
 
 class AnnotationHandler(tornado.web.RequestHandler):
 
@@ -48,7 +50,12 @@ class AnnotationHandler(tornado.web.RequestHandler):
             self.set_header('Content-Type', 'application/octstream')
             self.write(self.getstatus( imageId, projectId, guid, segTime ))
         else:
-            self.render("annotate.html")
+            data = pkg_resources.resource_string(
+                __name__, "resources/annotate.html")
+            with tempfile.NamedTemporaryFile() as fd:
+                fd.write(data)
+                fd.flush()
+                self.render(fd.name)
 
     def post(self):
         print ('-->AnnotationHandler.post...' + self.request.uri)
@@ -164,7 +171,10 @@ class AnnotationHandler(tornado.web.RequestHandler):
         if not self.has_new_segmentation(imageId, projectId, segTime):
             return Utility.compress(data)
 
-        path = 'resources/output/%s.%s.seg'%(imageId,projectId)
+        # TODO - make relative to a config-specified data directory
+        path = os.path.join(os.path.dirname(__file__),
+                            "..", "..", "data", "segmentation",
+                            '%s.%s.seg'%(imageId,projectId))
         data = []
         # Settings.addPredictionImage( projectId, imageId)
         if os.path.isfile( path ):
