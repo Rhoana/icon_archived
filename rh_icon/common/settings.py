@@ -20,10 +20,13 @@ import base64
 import numpy as np;
 import json
 
-from rh_icon.common.utility import Utility
-from rh_icon.common.database import Database
-from rh_icon.common.paths import Paths
+import rh_config
 
+ICON_CONFIG = rh_config.config.get("icon", {})
+ICON_PORT = ICON_CONFIG.get("port", 8888)
+
+BUTTERFLY_HOST = ICON_CONFIG.get("butterfly-host", "localhost")
+BUTTERFLY_PORT = int(ICON_CONFIG.get("butterfly-port", 2001))
 SETTINGS_JSON = '../../data/settings.json'
 PATHS_JSON    = '../../data/paths.json'
 PROJECTS_PATH = '../../data/projects'

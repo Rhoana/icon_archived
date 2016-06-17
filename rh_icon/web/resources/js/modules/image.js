@@ -5,7 +5,7 @@ function( Zlib, Util )
   {
     this.id = imageId;
     this.project = project;
-    this.url = '/' + purpose + '/' + this.id + '.tif';
+    this.url = '/image/' + project.id + '/' + this.id;
     this.labels_url = '/annotate.' + this.id + '.' + this.project.id + '.getannotations'
     this.labels_save_url = '/annotate.' + this.id + '.' + this.project.id + '.saveannotations'
     this.segmentation_url = '/annotate.' + this.id + '.' + this.project.id + '.getsegmentation'

@@ -102,7 +102,7 @@ class AnnotationHandler(tornado.web.RequestHandler):
         return Utility.compress(json.dumps( data ))
 
     def getLabels(self, imageId, projectId):
-        path = 'resources/labels/%s.%s.json'%(imageId,projectId)
+        path = '%s/%s.%s.json'%(Paths.Labels, imageId, projectId)
         content = '[]'
         try:
             with open(path, 'r') as content_file:
@@ -113,9 +113,10 @@ class AnnotationHandler(tornado.web.RequestHandler):
 
     def getAnnotations(self, imageId, projectId):
 
-        path = 'resources/labels/%s.%s.json'%(imageId,projectId)
+        path = '%s/%s.%s.json' % (Paths.Labels, imageId, projectId)
         # check the incoming folder first before to ensure
         # the most latest data is being referenced.
+
         path_incoming = 'resources/incoming/%s.%s.json'%(imageId,projectId)
         path = path_incoming if os.path.exists(path_incoming) else path
 
@@ -171,9 +172,7 @@ class AnnotationHandler(tornado.web.RequestHandler):
         if not self.has_new_segmentation(imageId, projectId, segTime):
             return Utility.compress(data)
 
-        # TODO - make relative to a config-specified data directory
-        path = os.path.join(os.path.dirname(__file__),
-                            "..", "..", "data", "segmentation",
+        path = os.path.join(Paths.Segmentation,
                             '%s.%s.seg'%(imageId,projectId))
         data = []
         # Settings.addPredictionImage( projectId, imageId)

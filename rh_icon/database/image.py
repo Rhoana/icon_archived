@@ -13,7 +13,12 @@ from rh_icon.common.paths import Paths
 # Image datum
 #---------------------------------------------------------------------------
 class Image (object):
-
+    PURPOSE_TRAINING = 0
+    PURPOSE_VALIDATION = 1
+    PURPOSE_TEST = 2
+    PURPOSE_ALL = 3
+    PURPOSE_ANNOTATED = 4
+    
     def __init__(	self, id, purpose=0 ):
         self.id                       = id
         self.purpose                  = purpose

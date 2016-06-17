@@ -241,6 +241,7 @@ class Tables:
             cmd += "("
             cmd += "ProjectId TEXT, "
             cmd += "Experiment TEXT, "
+            cmd += "Sample TEXT, "
             cmd += "Dataset TEXT, "
             cmd += "Channel TEXT, "
             cmd += "PRIMARY KEY(ProjectID)"
@@ -260,12 +261,13 @@ class Tables:
             cmd = "CREATE TABLE IF NOT EXISTS ButterflyPlane"
             cmd += "("
             cmd += "ProjectId TEXT, "
+            cmd += "ImageId TEXT, "
             cmd += "Z INT, "
             cmd += "Width INT, "
             cmd += "Height INT, "
             cmd += "XOff INT, "
             cmd += "YOff INT,"
-            cmd += "PRIMARY KEY(ProjectID, Z)"
+            cmd += "PRIMARY KEY(ProjectID, ImageId)"
             cmd += ")"
             cur.execute( cmd )
             Utility.report_status(

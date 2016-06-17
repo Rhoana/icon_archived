@@ -25,14 +25,10 @@ import mahotas
 import theano
 import theano.tensor as T
 
-base_path = os.path.dirname(__file__)
-sys.path.insert(1,os.path.join(base_path, '../common'))
-sys.path.insert(2,os.path.join(base_path, '../database'))
-
-from manager import Manager
-from utility import Utility
-from paths import Paths
-from db import DB
+from rh_icon.model.manager import Manager
+from rh_icon.common.utility import Utility
+from rh_icon.common.paths import Paths
+from rh_icon.database.db import DB
 
 #---------------------------------------------------------------------------
 class Training(Manager):
@@ -60,6 +56,7 @@ class Training(Manager):
 
         # Offline training
         if not self.online:
+            # NB: This path is likely dead?
             self.model.path = project.path_offline
             self.model.train(offline=True, mean=project.mean, std=project.std)
             self.done = True

@@ -6,6 +6,8 @@ Running icon:
 2. then request a compute node:
    srun --pty -p holyseasgpu --mem 90000 -t 18900 --tunnel 8889:8888 --gres=gpu:2 -n 4 -N 1 bash
 
+2a. pip install mahotas theano progressbar
+
 3. run the web server
    cd rhoana/icon
    sh web.sh

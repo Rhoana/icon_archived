@@ -13,15 +13,17 @@ import signal
 from datetime import datetime, date
 
 import tornado.httpserver
+import rh_config
 import rh_logger
 from rh_icon.web.browserhandler import BrowseHandler
 from rh_icon.web.annotationhandler import AnnotationHandler
 from rh_icon.web.projecthandler import ProjectHandler
 from rh_icon.web.helphandler import HelpHandler
 from rh_icon.web.defaulthandler import DefaultHandler
+from rh_icon.web.imagehandler import ImageHandler
 
 from rh_icon.common.utility import Utility
-from rh_icon.common.database import Database
+from rh_icon.common.settings import ICON_PORT
 
 MAX_WAIT_SECONDS_BEFORE_SHUTDOWN = 0.5
 
@@ -82,7 +84,8 @@ class Application(tornado.web.Application):
 	    (r'/train/(.*)', PkgResourcesHandler,
 	     {'path': 'resources/train/'}),
             (r'/validate/(.*)', PkgResourcesHandler,
-	     {'path': 'resources/validate/'})
+	     {'path': 'resources/validate/'}),
+	    (r'/image/([^/]+)/(.*)', ImageHandler, {} )
 	]
 
 	settings = {
@@ -138,11 +141,12 @@ def shutdown():
 
 def main():
     global server
-    rh_logger.logger.start_process("icon-webserver", "starting")
+    rh_logger.logger.start_process(
+        "icon-webserver", "starting on port %d" % ICON_PORT)
     signal.signal(signal.SIGTERM, sig_handler)
     signal.signal(signal.SIGINT, sig_handler)
 
-    port = 8888
+    port = ICON_PORT
     name = 'icon webserver'
     server = Server(name, port)
     server.start()

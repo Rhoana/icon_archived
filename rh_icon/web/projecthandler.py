@@ -7,11 +7,13 @@ import sys
 import re
 import glob
 import json
+import pkg_resources
+import tempfile
 
 from rh_icon.database.db import DB
 from rh_icon.database.project import Project
 from rh_icon.common.utility import Utility
-from rh_icon.common.settings import Paths
+from rh_icon.common.paths import Paths
 #from performance import Performance
 from rh_icon.database.db import Label
 from rh_icon.database.db import Image
@@ -41,7 +43,12 @@ class ProjectHandler(tornado.web.RequestHandler):
             self.set_header('Content-Type', 'text')
             self.write(self.getProjectEditData( tokens[2] ))
         else:
-            self.render("project.html")
+            data = pkg_resources.resource_string(
+                __name__, "resources/project.html")
+            with tempfile.NamedTemporaryFile() as fd:
+                fd.write(data)
+                fd.flush()
+                self.render(fd.name)
 
     def post(self):
         print ('-->ProjectHandler.post...')

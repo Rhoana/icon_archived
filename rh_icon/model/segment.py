@@ -35,7 +35,9 @@ from rh_icon.common.utility import enum
 from rh_icon.common.settings import Settings
 from rh_icon.common.paths import Paths
 from rh_icon.database.db import DB
+from rh_icon.database.image import Image
 from rh_icon.common.performance import Performance
+from rh_icon.common.imageaccess import read_image
 
 #---------------------------------------------------------------------------
 class Prediction(Manager):
@@ -127,7 +129,7 @@ class Prediction(Manager):
         path = '%s/%s.tif'%(basepath, task.id)
         #success, image = Utility.get_image_padded(path, project.patchSize ) #model.get_patch_size())
 
-        print 'segment - path:', path
+        print 'segment - image:', task.id
         print 'priority - ', task.segmentationPriority
         # perform segmentation
 
@@ -138,7 +140,7 @@ class Prediction(Manager):
         # serialize to file
         segPath = '%s/%s.%s.seg'%(Paths.Segmentation, task.id, project.id)
         #self.save_probs( probs, project.id, task.id )
-        self.classify_n_save( path, segPath, project )         
+        self.classify_n_save( task.id, segPath, project )         
 
         end_time = time.clock()
         duration = (end_time - start_time)
@@ -153,25 +155,24 @@ class Prediction(Manager):
     #-------------------------------------------------------------------
     def work_offline(self, project):
         
-        imagePaths = sorted( glob.glob( '%s/*.tif'%(Paths.TrainGrayscale)  ) )
+        images = DB.getImages(project, purpose=Image.PURPOSE_TRAINING)
 
-        for path in imagePaths:
+        for image in images:
             if self.done:
                 break
 
-            name = Utility.get_filename_noext( path )
-          
-            print 'path:', path 
+            name = image.id
+            print 'path:', name
             Utility.report_status('segmenting', '%s'%(name))
 
             #segPath = '%s/%s.offline.seg'%(Paths.TrainGrayscale, name)
             segPath = '%s/%s.%s.offline.seg'%(Paths.Segmentation, name, project.id)
 
-            self.classify_n_save( path, segPath, project )
+            self.classify_n_save( image.id, segPath, project )
 
-    def classify_n_save(self, imagePath, segPath, project):
+    def classify_n_save(self, image_id, segPath, project):
 
-        image = mahotas.imread( imagePath )
+        image = read_image(project.id, image_id)
         #image = Utility.normalizeImage( image ) - project.mean
         image = Utility.normalizeImage( image )
 

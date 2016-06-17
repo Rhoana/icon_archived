@@ -18,10 +18,10 @@
 import os
 import sys
 import math
+import mahotas
 import theano
 import theano.tensor as T
 import numpy as np
-import mahotas
 import scipy.ndimage
 import scipy.misc
 import skimage.transform
@@ -33,8 +33,9 @@ import shutil
 import json
 import PIL.Image
 
+from rh_icon.common.imageaccess import read_image
 from rh_icon.common.utility import Utility
-from rh_icon.common.settings import Paths
+from rh_icon.common.utility import Paths
 from rh_icon.database.project import Project
 from rh_icon.database.db import DB
 
@@ -155,7 +156,7 @@ class Data:
 
     def aload(self, project):
 
-        self.projecft = project
+        self.project = project
 
         # LOAD TRAINING DATA 
         train_new = len(self.entries) > 0
@@ -1085,7 +1086,7 @@ class Data:
         mode   = 'symmetric'
         patchSize = project.patchSize
         pad = patchSize
-        img = mahotas.imread( imgPath )
+        img = read_image(project.id, imageId)
         img = np.pad(img, ((pad, pad), (pad, pad)), mode)
         img = Utility.normalizeImage(img)
 

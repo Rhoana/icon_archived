@@ -954,7 +954,7 @@ class Database:
         annFile = '%s/%s.%s.json'%(Paths.Labels, image, project)
 
         if not os.path.exists( segFile ):
-             segFile = None
+	    segFile = None
         if not os.path.exists( annFile ):
             annFile = None
         Database.storeTask( project, image, annFile, segFile )

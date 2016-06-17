@@ -28,6 +28,7 @@ from math import log
 from rh_icon.common.paths import Paths
 from rh_icon.common.utility import *
 from rh_icon.common.database import Database
+from rh_icon.common.imageaccess import read_image
 
 def variation_of_information(X, Y):
   n = float(sum([len(x) for x in X]))
@@ -263,12 +264,9 @@ class Performance:
             if i > maxNumTests:
                 break
 
-            # extract the name of the image from the path
-            name = Utility.get_filename_noext( path )
-
             # load the test image
-            print 'generating performance for...%s'%(name)
-            test_image = mahotas.imread( path )
+            print 'generating performance for...%s'%(self.image_id)
+            test_image = read_image(projectId, self.image_id)
             test_image = Utility.normalizeImage( test_image )
             #success, test_image = Utility.get_image_padded(path, model.get_patch_size())
 
