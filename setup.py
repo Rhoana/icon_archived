@@ -37,7 +37,8 @@ setup(
     entry_points=dict(console_scripts=[
         "icon-webserver = rh_icon.web.server:main",
         "icon-train = rh_icon.model.train:main",
-        "icon-segment = rh_icon.model.segment:main"
+        "icon-segment = rh_icon.model.segment:main",
+        "icon-create-db = rh_icon.database.setup:main"
     ]),
     package_data=dict(rh_icon=rh_icon_package_data)
 )

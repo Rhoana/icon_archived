@@ -153,7 +153,11 @@ class AnnotationHandler(tornado.web.RequestHandler):
             return True
 
         task = DB.getImage(projectId, imageId)
-        taskSegTime = time.strptime(task.segmentationTime, '%Y-%m-%d %H:%M:%S')
+        if task.segmentationTime is None:
+            return True
+        else:
+            taskSegTime = time.strptime(
+                task.segmentationTime, '%Y-%m-%d %H:%M:%S')
         segTime = segTime.replace("%20", " ")
         segTime = time.strptime(segTime, '%Y-%m-%d %H:%M:%S')
 

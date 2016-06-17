@@ -43,6 +43,8 @@ class Tables:
             cur.execute("DROP TABLE IF EXISTS Label")
             cur.execute("DROP TABLE IF EXISTS TrainingStats")
             cur.execute("DROP TABLE IF EXISTS Performance")
+            cur.execute("DROP TABLE IF EXISTS Butterfly")
+            cur.execute("DROP TABLE IF EXISTS ButterflyPlane")
             cur.execute("DROP VIEW IF EXISTS ImageView")
 
     @staticmethod

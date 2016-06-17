@@ -27,8 +27,6 @@ ICON_PORT = ICON_CONFIG.get("port", 8888)
 
 BUTTERFLY_HOST = ICON_CONFIG.get("butterfly-host", "localhost")
 BUTTERFLY_PORT = int(ICON_CONFIG.get("butterfly-port", 2001))
-SETTINGS_JSON = '../../data/settings.json'
-PATHS_JSON    = '../../data/paths.json'
 PROJECTS_PATH = '../../data/projects'
 TRAIN_TASK_TYPE    = 'train'
 PREDICT_TASK_TYPE  = 'predict'

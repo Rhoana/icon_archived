@@ -19,15 +19,36 @@ import sys
 import json
 import glob
 import time
+import urllib
 import uuid
 
 from datetime import datetime, date
 
 from rh_icon.common.utility import *
-from rh_icon.paths import Paths
+from rh_icon.common.paths import Paths
 from rh_icon.database.tables import Tables
 from rh_icon.database.project import Project
 from rh_icon.database.db import DB
+
+TILESPEC_TEMPLATE =    {
+    "layer": 0, 
+    "minIntensity": 0.0, 
+    "mipmapLevels": {
+        "0": {
+            "imageUrl": "file:///path_to/ac3_input_0000.tif"
+        }
+        }, 
+    "height": 1024, 
+    "width": 1024, 
+    "transforms": [
+        {
+            "className": "mpicbg.trakem2.transform.TranslationModel2D", 
+            "dataString": "0 0"
+            }], 
+    "mfov": 1, 
+    "tile_index": 1, 
+    "maxIntensity": 255.0, 
+    "bbox": [0, 1023, 0, 1023]}
 
 def install(project):
     # remove any existing model files associated with this project
@@ -50,10 +71,16 @@ def install(project):
     paths = glob.glob('%s/*.tif'%(Paths.TrainGrayscale))
     paths.sort()
 
+    # ensure that the tilespecs directory is present
+    if not os.path.isdir(Paths.Tilespecs):
+        os.makedirs(Paths.Tilespecs)
+    
+    DB.addButterflyProject(project.id, 
+                           "icon", "ac3", "ac3", "raw")    
     # setup the first 20 images as a training set
     i = 0
     purpose = 0
-    for path in paths:
+    for z, path in enumerate(paths):
         name = Utility.get_filename_noext( path )
         segFile = '%s/%s.%s.seg'%(Paths.Segmentation, name, project.id)
         annFile = '%s/%s.%s.json'%(Paths.Labels, name, project.id)
@@ -71,6 +98,19 @@ def install(project):
         if i > 20:
             # All subsequent images are validation
             purpose = 1
+        #
+        # Write the tilespec for this image
+        #
+        url = "file://" + urllib.pathname2url(os.path.abspath(path))
+        tilespec = TILESPEC_TEMPLATE.copy()
+        tilespec["layer"] = z
+        tilespec["mipmapLevels"] = {"0": { "imageUrl": url}}
+        tilespec_loc = os.path.join(Paths.Tilespecs, "W01_Sec%03d.json" % z)
+        json.dump([tilespec], open(tilespec_loc, "w"))
+        #
+        # Write the butterfly plane record for this image
+        #
+        DB.addButterflyPlane(project.id, name, z, 1024, 1024, 0, 0)
 
     # store the project
     DB.storeProject( project )
@@ -79,7 +119,7 @@ def install(project):
 #---------------------------------------------------------------------------
 # Entry point to the main function of the program.
 #---------------------------------------------------------------------------
-if __name__ == '__main__':
+def main():
     print 'Icon database (installation interface)'
 
     # start in a blank slate
@@ -105,3 +145,6 @@ if __name__ == '__main__':
     cnn.kernelSizes  = [5,5]
     cnn.hiddenUnits  = [200]
     install( cnn )
+
+if __name__=="__main__":
+    main()

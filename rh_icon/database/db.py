@@ -753,6 +753,25 @@ class DB:
             plane = ButterflyPlane(
                 projectId, imageId, z, width, height, xoff, yoff)
             return plane
+    
+    @staticmethod
+    def addButterflyProject(projectId, experiment, sample, dataset, channel):
+        with lite.connect(DATABASE_NAME) as connection:
+            cur = connection.cursor()
+            cmd = "INSERT INTO Butterfly "
+            cmd += "(ProjectId, Experiment, Sample, Dataset, Channel) "
+            cmd += "VALUES (?, ?, ?, ?, ?)"
+            cur.execute(cmd, [projectId, experiment, sample, dataset, channel])
+    
+    @staticmethod
+    def addButterflyPlane(projectId, imageId, z, width, height, xoff, yoff):
+        with lite.connect(DATABASE_NAME) as connection:
+            cur = connection.cursor()
+            cmd = "INSERT INTO ButterflyPlane "
+            cmd += "(ProjectId, ImageId, Z, Width, Height, XOff, YOff) "
+            cmd += "VALUES (?, ?, ?, ?, ?, ?, ?)"
+            cur.execute(
+                cmd, [projectId, imageId, z, width, height, xoff, yoff])
 
     #--------------------------------------------------------------------------------
     # HIDDEN UNITS
