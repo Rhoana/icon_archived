@@ -29,7 +29,6 @@ Running icon:
    modules started above.
 
 
-
-![alt tag](github.com/Rhoana/icon/blob/master/screenshots/segmentation.png)
+![alt tag](https://github.com/Rhoana/icon/blob/master/screenshots/segmentation.png)
 
 
