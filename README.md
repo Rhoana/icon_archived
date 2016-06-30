@@ -1,10 +1,10 @@
 Running icon:
 
 1. open a terminal sessions listening on port 8889
-   ssh -L 8889:localhost:8889 fgonda@rclogin09.rc.fas.harvard.edu
+   ssh -L 8889:localhost:8889 user@server
 
 2. then request a compute node:
-   srun --pty -p holyseasgpu --mem 90000 -t 18900 --tunnel 8889:8888 --gres=gpu:2 -n 4 -N 1 bash
+   srun --pty -p partitionname --mem 90000 -t 18900 --tunnel 8889:8888 --gres=gpu:2 -n 4 -N 1 bash
 
 3. run the web server
    cd rhoana/icon
@@ -27,4 +27,8 @@ Running icon:
    be active at a time.  The active project is
    is executed by the DNN training and segmentation
    modules started above.
+
+
+![alt tag](https://github.com/Rhoana/icon/blob/master/screenshots/segmentation.png)
+
 
