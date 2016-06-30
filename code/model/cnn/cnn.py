@@ -48,6 +48,7 @@ class CNN(object):
         nkerns, 
         kernel_sizes, 
         hidden_sizes, 
+        n_out=2,
         offline=False,
         path=None,
         train_time=5.0,
@@ -63,6 +64,7 @@ class CNN(object):
         self.rng = rng
         self.activation = activation
         self.input = input
+        self.n_classes = n_out
         self.nkerns = nkerns
         self.kernelSizes = kernel_sizes
         self.hiddenSizes = hidden_sizes
@@ -131,7 +133,7 @@ class CNN(object):
                     input=mlp_input, 
                     n_in=self.nkerns[-1] * (featureMapSize ** 2), 
                     n_hidden=self.hiddenSizes,
-                    n_out=2, 
+                    n_out=self.n_classes, 
                     patch_size=self.patchSize,
                     batch_size=self.batchSize,
                     activation=self.activation)
@@ -220,18 +222,15 @@ class CNN(object):
 
     def predict(self, image, mean=None, std=None, threshold=0.5):
 
-        prob = self.classify( image=image, mean=mean, std=std)
+        prob, classes = self.classify( image=image, mean=mean, std=std)
         #TODO: how to deal with multiple labels
         # extract the predicted labels
-        '''
-        prob[ prob >= threshold ] = 9
-        prob[ prob <  threshold ] = 1
-        prob[ prob == 9         ] = 0
-        '''
-        prob = self.threshold( prob, factor=threshold )
-        prob = prob.astype(dtype=int)
-        prob = prob.flatten()
-        return prob
+        #prob = self.threshold( prob, factor=threshold )
+        #prob = prob.astype(dtype=int)
+        #prob = prob.flatten()
+        #return prob
+        return classes
+        
 
     def threshold(self, prob, factor=0.5):
         prob[ prob >= factor ] = 9

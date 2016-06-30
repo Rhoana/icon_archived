@@ -178,21 +178,13 @@ class Prediction(Manager):
     def classify_n_save(self, imagePath, segPath, project):
 
         image = mahotas.imread( imagePath )
-        #image = Utility.normalizeImage( image ) - project.mean
         image = Utility.normalizeImage( image )
 
         # classify the image
-        #prob = self.model.classify( image=image, mean=project.mean, std=project.std )
         prob = self.model.predict( image=image, mean=project.mean, std=project.std, threshold=project.threshold)
-
 
         #TODO: how to deal with multiple labels
         # extract the predicted labels
-        '''
-        prob[ prob >= project.threshold ] = 9
-        prob[ prob <  project.threshold ] = 1
-        prob[ prob == 9                 ] = 0
-        '''
         prob = prob.astype(dtype=int)
         prob = prob.flatten()
         print 'results:', np.bincount( prob ), self.revision

@@ -93,6 +93,7 @@ class Manager(threading.Thread):
                         nkerns=project.nKernels,
                         kernel_sizes=project.kernelSizes,
                         hidden_sizes=project.hiddenUnits,
+                        n_out=len(project.labels), 
                         train_time=project.trainTime,
                         momentum=project.momentum,
                         learning_rate=project.learningRate,

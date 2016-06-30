@@ -94,7 +94,7 @@ def get_hidden_output(image_shared, hiddenLayer, nHidden, nfilt):
     return output
 
 
-def get_logistic_regression_output(image_shared, logregLayer):
+def get_logistic_regression_output(image_shared, logregLayer, n_classes):
     output_shape = image_shared.shape
 
     W_lreg = logregLayer.W
@@ -112,11 +112,51 @@ def get_logistic_regression_output(image_shared, logregLayer):
     output = output.flatten(2)
     output = T.nnet.softmax(output.T).T
 
-    return output.reshape((2,output_shape[2], output_shape[3]))
+    return output.reshape((n_classes,output_shape[2], output_shape[3]))
+
+
+def extract_fragments( logreg_output, final_fragments_per_class ):
+    for c in range( len(final_fragments_per_class) ):
+        logreg_out = logreg_output[c,:,:]
+        logreg_out = logreg_out.eval()
+
+        final_fragments = final_fragments_per_class[c]
+        final_fragments.append(logreg_out)
+
+
+def gen_predicted_probs_n_classes(offsets, final_fragments_per_class, image):
+
+    prob_img_per_class = []
+
+    offset_jumps = np.int16(np.sqrt(len(offsets)))
+
+    # compute final probability map for each class
+    for final_fragments in final_fragments_per_class:
+
+        print '-------:'
+        prob_img = np.zeros(image.shape)
+
+        offset_jumps = np.int16(np.sqrt(len(offsets)))
+        for f, o in zip(final_fragments, offsets):
+            prob_size = prob_img[o[0]::offset_jumps,o[1]::offset_jumps].shape
+            f_s = np.zeros(prob_size)
+            f_s[:f.shape[0], :f.shape[1]] = f.copy()
+            prob_img[o[0]::offset_jumps,o[1]::offset_jumps] = f_s
+
+        prob_img = prob_img.flatten()
+        if len(prob_img_per_class) > 0:
+            prob_img_per_class = np.column_stack((prob_img_per_class, prob_img))
+        else:
+            prob_img_per_class = prob_img
+
+    predicted_classes = np.argmax( prob_img_per_class, axis=1 )
+    predicted_probs   = np.max( prob_img_per_class, axis=1 )
+
+    return predicted_probs, predicted_classes
 
 
 def classify_image( image, classifier ):
-    
+
     #image = mahotas.imread( path )
     #imageSize = 1024
     #image = image[0:imageSize,0:imageSize]
@@ -124,18 +164,8 @@ def classify_image( image, classifier ):
 
     imageSize = image.shape[0]
 
-    '''
-    print 'max:', np.max( image.flatten() )
-    print 'min:', np.min( image.flatten() )
-
-    print 'nkernels:', classifier.nkerns
-    print 'kernelSizes:', classifier.kernelSizes
-    print 'batchSize:', classifier.batchSize 
-    print 'imageSize:', imageSize
-    '''
-
     start_time = time.clock()
-    
+
     #GPU
     image_shared = theano.shared(np.float32(image), borrow=True)
     image_shared = image_shared.reshape((1,1,imageSize,imageSize))
@@ -152,11 +182,11 @@ def classify_image( image, classifier ):
             convolved_image = get_convolution_output(image_shared=img_sh, clayer=clayer)
             output = get_max_pool_fragments(convolved_image, clayer=clayer)
             newFragments.extend(output)
-            
+
         fragments = newFragments
 
     #### now the hidden layer
-    
+
     print "hidden layer"
 
     hidden_fragments = []
@@ -174,38 +204,39 @@ def classify_image( image, classifier ):
 
     final_fragments = []
     for fragment in hidden_fragments:
-        logreg_out = get_logistic_regression_output(image_shared=fragment, logregLayer=classifier.mlp.logRegressionLayer)
-        logreg_out = logreg_out[0,:,:]
+        logreg_out = get_logistic_regression_output(
+                        image_shared=fragment, 
+                        logregLayer=classifier.mlp.logRegressionLayer,
+                        n_classes=classifier.n_classes)
+
         logreg_out = logreg_out.eval()
         final_fragments.append(logreg_out)
 
-    #total_time = time.clock() - start_time
-    #print "This took %f seconds." % (total_time)
-
     print "assembling final image"
 
+    prob_imgs = np.zeros( (classifier.n_classes, image.shape[0], image.shape[1]) )
     prob_img = np.zeros(image.shape)
 
     offsets_tmp = np.array([[0,0],[0,1],[1,0],[1,1]])
-    
+
     if len(classifier.convLayers)>=1:
         offsets = offsets_tmp
 
     if len(classifier.convLayers)>=2:
         offset_init_1 = np.array([[0,0],[0,1],[1,0],[1,1]])
         offset_init_2 = offset_init_1 * 2
-    
+
         offsets = np.zeros((4,4,2))
         for o_1 in range(4):
             for o_2 in range(4):
                 offsets[o_1,o_2] = offset_init_1[o_1] + offset_init_2[o_2]
-                
+
         offsets = offsets.reshape((16,2))
 
     if len(classifier.convLayers)>=3:
         offset_init_1 = offsets.copy()
         offset_init_2 =  np.array([[0,0],[0,1],[1,0],[1,1]]) * 4
-    
+
         offsets = np.zeros((16,4,2))
         for o_1 in range(16):
             for o_2 in range(4):
@@ -218,49 +249,39 @@ def classify_image( image, classifier ):
     #            (1,0),(1,2),(3,0),(3,2),
     #            (1,1),(1,3),(3,1),(3,3)]
 
-    
 
     # offsets_1 = [(0,0),(0,4),(4,0),(4,4),
     #              (0,2),(0,6),(4,2),(4,6)]
 
     offset_jumps = np.int16(np.sqrt(len(offsets)))
-    for f, o in zip(final_fragments, offsets):
-        prob_size = prob_img[o[0]::offset_jumps,o[1]::offset_jumps].shape
-        f_s = np.zeros(prob_size)
-        f_s[:f.shape[0], :f.shape[1]] = f.copy()
-        prob_img[o[0]::offset_jumps,o[1]::offset_jumps] = f_s
+    for f_fragments, o in zip(final_fragments, offsets):
+        for c in range( classifier.n_classes ):
+            f = f_fragments[c]
+            prob_img = prob_imgs[c]
+
+            prob_size = prob_img[o[0]::offset_jumps,o[1]::offset_jumps].shape
+            f_s = np.zeros(prob_size)
+            f_s[:f.shape[0], :f.shape[1]] = f.copy()
+            prob_img[o[0]::offset_jumps,o[1]::offset_jumps] = f_s
+
+
+    #floor of patchsize/2
+    probs = []
+    shift_amount = np.floor( classifier.patchSize/2 )
+    for c in range( prob_imgs.shape[0] ):
+        prob_img = shift(prob_imgs[c],(shift_amount, shift_amount)) 
+        prob_img = prob_img.flatten()
+
+        if len(probs) == 0:
+            probs = prob_img
+        else:
+            probs = np.column_stack((probs, prob_img ))
+
+    predicted_classes = np.argmax( probs, axis=1 )
+    predicted_probs = np.max( probs, axis=1)
 
     total_time = time.clock() - start_time
     print "This took %f seconds." % (total_time)
 
-    #floor of patchsize/2
-    shift_amount = np.floor( classifier.patchSize/2 )
-    prob_img = shift(prob_img,(shift_amount, shift_amount))
-    return prob_img
-
-def aaaa(prob_img, path):
-
-    # felix additions
-    prob = prob_img
-    prob[ prob < 0.5] = 0
-    prob[ prob >= 0.5] = 1
-    prob = prob.astype(dtype=int)
-    prob = prob.flatten()
-    print 'results :', np.bincount( prob )
-    print np.shape( prob )
-    print prob
-
-    imageId = 'ac3_input_0003';
-    projectId = 'testcnn'
-    path ='' #'%s/%s.%s.seg'%(Paths.Segmentation, imageId, projectId)
-    output = StringIO.StringIO()
-    output.write(prob.tolist())
-    content = output.getvalue()
-    encoded = base64.b64encode(content)
-    compressed = zlib.compress(encoded)
-    with open(path, 'w') as outfile:
-	outfile.write(compressed)
-
- 
-    
+    return predicted_probs, predicted_classes
 
