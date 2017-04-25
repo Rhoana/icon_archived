@@ -14,8 +14,13 @@
  <body>
     <section class="page-header">
       <h1 class="project-name">ICON</h1>
-      <h2 class="project-tagline">Code and models accompanying "An Interactive Approach to Train Deep Neural Networks for Segmentation of Neuronal Structures"</h2>
+      <h1 class="project-description">An Interactive Approach to Train Deep Neural Networks for Segmentation of Neuronal Structures</h1>
+      <h3>(IEEE-ISBI 2017 - Top 11 Best Student Papers)</h3>
       <h2 class="project-tagline">Felix Gonda, Verena Kaynig, Ray Thouis, Daniel Haehn, Jeff Lichtman, Toufiq Parag, Hanspeter Pfister</h2>
+
+      <br>
+      <h2 class="project-tagline">Code and data accompanying the paper.</h2>
+
       <a href="https://arxiv.org/abs/1610.09032" class="btn">View on arXiv</a>
       <a href="https://github.com/Rhoana/icon" class="btn">View on GitHub</a>
       <a href="https://github.com/Rhoana/icon/zipball/master" class="btn">Download .zip</a>
@@ -24,8 +29,12 @@
 
     <section class="main-content">
       <p>
-        ICON is a software for training a neural network for for image segmentation tasks. It supports MLP, CNN, and UNET. The UNET is not fully implemented in this version of the code.
-        The UI runs on a web browser while the classifiers runs on a server with GPU
+        ICON is an interactive tool for training deep neural networks for image segmentation tasks. 
+        A user enters sparse annotations over a web-based user interface to train a classifier running
+        on a high-performance GPU-enabled server. The classifier produces pixel confidences that are
+        rendered as an overlay on the user interface to guide the the annotation process.  The server
+        needs to be setup only once on a single machine or a cluster; and the end users require a browser
+        (Chrome or Firefox) to access the system.
 
       </p>
 
@@ -55,6 +64,8 @@
 
 </ol>
 <br>
+
+<p><strong>REFERENCES</strong></p>
 
 <ol>
 <li>
